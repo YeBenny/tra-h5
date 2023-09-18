@@ -1,0 +1,53 @@
+{
+  "message": "你好 i18n !!",
+  "app.title": "",
+  "title": {
+    "qrcode": "二维码",
+    "activities": "系列",
+    "assets": "积分",
+    "transfer": {
+      "info": "转出信息",
+      "method": "转出方式",
+      "confirm": "转出确认",
+      "fail": "转出失败",
+      "success": "转出成功",
+      "recipient": "选择接收者",
+      "amount": "输入金额"
+    },
+    "history": "历史",
+    "used": "已使用",
+    "self_transfer": "自我转账"
+  },
+  "subtitle": {
+    "balance": "余额：{0}",
+    "amount": "金额：{0}",
+    "transfer": "转出给{0}",
+    "transfer_from": "来自{0}的转账",
+    "transfer_to": "给{0}的转账"
+  },
+  "btn": {
+    "cancel": "取消",
+    "confirm": "确认",
+    "transfer": "转出",
+    "identify_qrcode": "识别二维码",
+    "scan_qrcode": "扫描二维码",
+    "input_name": "输入名字"
+  },
+  "input": {
+    "recipient": "接收者",
+    "amount": "金额",
+    "required": {
+      "recipient": "请输入接收者",
+      "amount": "请输入金额"
+    }
+  },
+  "language": {
+    "zh": "中文",
+    "en": "English"
+  },
+  "theme": {
+    "blue": "蓝色",
+    "green": "绿色",
+    "purple": "紫色"
+  }
+}
