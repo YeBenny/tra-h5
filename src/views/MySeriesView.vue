@@ -4,6 +4,10 @@ import router from '@/router'
 import ItemSeries from '../components/ItemSeries.vue'
 
 const title = ref('MY SERIES')
+
+const onClickSeries = () => {
+  router.push({ name: 'my-series-detail', params: { id: '332eb08e-081f-4724-a248-426e3cd4a9bb' } })
+}
 </script>
 <template>
   <v-layout
@@ -28,7 +32,7 @@ const title = ref('MY SERIES')
       </template>
     </v-app-bar>
     <v-main class="bg-color">
-      <v-container class="h-100 pa-4">
+      <v-container class="h-100">
         <v-row justify="center">
           <v-col cols="4">
             <v-img cover src="images/empty_box.png"></v-img>
@@ -44,7 +48,7 @@ const title = ref('MY SERIES')
         </v-row>
         <v-row>
           <v-col v-for="n in 3" :key="n" cols="12">
-            <ItemSeries />
+            <ItemSeries @click="onClickSeries" />
           </v-col>
         </v-row>
       </v-container>

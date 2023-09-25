@@ -12,7 +12,6 @@ const overlap = ref(true)
         <v-col cols="auto" align-self="center">
           <v-card elevation="0">
             <LazyImage
-              :style="{ position: 'relative' }"
               bg-color="bg-white"
               src="images/cover.png"
               width="48"
