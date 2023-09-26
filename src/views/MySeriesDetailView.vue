@@ -2,10 +2,9 @@
 import { ref } from 'vue'
 import router from '@/router'
 import LazyImage from '../components/LazyImage.vue'
-import ItemSeries from '../components/ItemSeries.vue'
+import ItemTRA from '../components/ItemTRA.vue'
 
-const title = ref('MY SERIES')
-const overlap = ref(true)
+const title = ref('My Series Detail')
 const dialog = ref(false)
 </script>
 
@@ -16,7 +15,7 @@ const dialog = ref(false)
       minHeight: '100%'
     }"
   >
-    <v-app-bar :title="title" fixed>
+    <v-app-bar :title="title" color="primary" density="compact" fixed flat>
       <v-app-bar-nav-icon>
         <v-btn icon="mdi-arrow-left" @click="router.back()" />
       </v-app-bar-nav-icon>
@@ -29,23 +28,15 @@ const dialog = ref(false)
               <v-card elevation="0">
                 <LazyImage
                   bg-color="bg-white"
-                  src="images/cover.png"
+                  :src="`https://picsum.photos/200?random=${Date.now()}`"
                   width="218"
                   :aspect-ratio="1"
                   cover
                 />
-                <v-overlay
-                  v-model="overlap"
-                  class="align-center justify-center"
-                  contained
-                  persistent
-                >
-                  <v-img src="images/locker.png" width="48"></v-img>
-                </v-overlay>
               </v-card>
             </v-col>
             <v-col cols="12">
-              <p class="text-caption font-weight-bold text-center">Baekhyun Series</p>
+              <p class="text-caption font-weight-bold text-center">ABC Series</p>
               <p class="text-caption text-description text-center">4/8 Collections</p>
             </v-col>
           </v-row>
@@ -56,7 +47,7 @@ const dialog = ref(false)
         <v-container>
           <v-row>
             <v-col v-for="n in 10" :key="n" cols="12">
-              <ItemSeries @click="dialog = true" />
+              <ItemTRA :id="n" @click="dialog = true" />
             </v-col>
           </v-row>
         </v-container>
@@ -66,10 +57,11 @@ const dialog = ref(false)
 
   <v-dialog v-model="dialog" scrollable fullscreen persistent>
     <v-container class="bottom-container pa-0">
-      <v-toolbar class="rounded-t-xl" color="white" title="Baekhyun Series">
-        <v-app-bar-nav-icon>
-          <v-btn icon="mdi-arrow-left" @click="dialog = false" />
-        </v-app-bar-nav-icon>
+      <v-toolbar class="rounded-t-xl" color="white" title="ABC Series">
+        <v-spacer></v-spacer>
+        <v-btn icon @click="dialog = false">
+          <v-icon>mdi-close</v-icon>
+        </v-btn>
       </v-toolbar>
       <v-container class="bg-white">
         <v-row justify="center">
@@ -77,7 +69,7 @@ const dialog = ref(false)
             <v-card elevation="0">
               <LazyImage
                 bg-color="bg-white"
-                src="images/cover.png"
+                src="https://picsum.photos/200"
                 width="218"
                 :aspect-ratio="1"
                 cover
@@ -85,8 +77,8 @@ const dialog = ref(false)
             </v-card>
           </v-col>
           <v-col cols="12">
-            <p class="text-caption font-weight-bold text-center">Baekhyun Series</p>
-            <p class="text-caption text-description text-center">4/8 Collections</p>
+            <p class="text-caption font-weight-bold text-center">TRA-1</p>
+            <p class="text-caption text-description text-center">{{ $d(new Date(), 'long') }}</p>
           </v-col>
         </v-row>
         <v-row justify="center">

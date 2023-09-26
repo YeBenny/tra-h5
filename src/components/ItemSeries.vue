@@ -1,11 +1,8 @@
 <script setup>
-import { ref } from 'vue'
 import LazyImage from './LazyImage.vue'
-
-const overlap = ref(true)
 </script>
 
-<template>
+<!-- <template>
   <v-card>
     <v-container class="py-3 px-4">
       <v-row justify="space-between">
@@ -33,10 +30,17 @@ const overlap = ref(true)
       </v-row>
     </v-container>
   </v-card>
+</template> -->
+<template>
+  <v-card class="mx-auto">
+    <LazyImage bg-color="bg-white" :src="`https://picsum.photos/200?random=${Date.now()}`" cover />
+    <v-card-title>ABC Series</v-card-title>
+    <v-card-text>4/8 Collections</v-card-text>
+  </v-card>
 </template>
 
 <style>
 .text-description {
-  color: #f38000;
+  color: #2c3e50;
 }
 </style>

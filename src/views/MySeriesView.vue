@@ -1,9 +1,11 @@
 <script setup>
 import { ref } from 'vue'
 import router from '@/router'
+import EmptySeries from '../components/EmptySeries.vue'
 import ItemSeries from '../components/ItemSeries.vue'
 
-const title = ref('MY SERIES')
+const title = ref('My Series Title')
+const series = ref([1, 2, 3, 4, 5, 6])
 
 const onClickSeries = () => {
   router.push({ name: 'my-series-detail', params: { id: '332eb08e-081f-4724-a248-426e3cd4a9bb' } })
@@ -18,36 +20,24 @@ const onClickSeries = () => {
       backgroundSize: '100% 100%'
     }"
   >
-    <v-app-bar color="primary" :title="title" elevation="0" extension-height="100" fixed>
+    <v-app-bar color="primary" :title="title" extension-height="100" density="compact" fixed flat>
       <v-app-bar-nav-icon>
         <v-btn icon="mdi-arrow-left" @click="router.back()" />
       </v-app-bar-nav-icon>
       <template v-slot:extension>
         <div class="w-100 rounded-t-xl" :style="{ backgroundColor: 'rgba(51, 51, 51, 0.8)' }">
-          <div class="text-white ma-3 d-flex justify-center">
-            Complete the mission & win rewards!🎉
-          </div>
+          <div class="text-white ma-3 d-flex justify-center">My Series Description</div>
           <div class="w-100 py-4 bg-color rounded-t-xl"></div>
         </div>
       </template>
     </v-app-bar>
     <v-main class="bg-color">
       <v-container class="h-100">
-        <v-row justify="center">
-          <v-col cols="4">
-            <v-img cover src="images/empty_box.png"></v-img>
-          </v-col>
-          <v-col cols="12">
-            <p class="font-weight-bold text-center">We found 0 collection(s)</p>
-          </v-col>
-          <v-col cols="12">
-            <p class="font-weight-regular text-center">
-              In the meantime, feel free to browse our wide selection of products and services.
-            </p>
-          </v-col>
+        <v-row v-if="series.length === 0">
+          <EmptySeries />
         </v-row>
-        <v-row>
-          <v-col v-for="n in 3" :key="n" cols="12">
+        <v-row v-else>
+          <v-col v-for="n in series.length" :key="n" cols="6">
             <ItemSeries @click="onClickSeries" />
           </v-col>
         </v-row>
