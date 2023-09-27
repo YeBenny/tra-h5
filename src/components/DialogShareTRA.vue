@@ -31,7 +31,7 @@ const shareViaWebShare = async () => {
     let type = blob.type.split('/')[1]
     let files = [new File([blob], `${Date.now()}.${type}`, { type: blob.type })]
     if (navigator.share) {
-      await navigator.share({
+      navigator.share({
         title: 'Share Title',
         text: 'Share Text',
         files
