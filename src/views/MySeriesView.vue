@@ -32,7 +32,7 @@ const onClickSeries = () => {
       </template>
     </v-app-bar>
     <v-main class="bg-color">
-      <v-container class="h-100">
+      <v-container class="h-100" fluid>
         <v-row v-if="series.length === 0">
           <EmptySeries />
         </v-row>

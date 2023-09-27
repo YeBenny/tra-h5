@@ -1,11 +1,14 @@
 <script setup>
 import { ref } from 'vue'
 import router from '@/router'
+import Loading from '../components/Loading.vue'
 import LazyImage from '../components/LazyImage.vue'
 import ItemTRA from '../components/ItemTRA.vue'
+import DialogShareTRA from '../components/DialogShareTRA.vue'
 
 const title = ref('My Series Detail')
 const dialog = ref(false)
+const overlay = ref(false)
 </script>
 
 <template>
@@ -21,8 +24,8 @@ const dialog = ref(false)
       </v-app-bar-nav-icon>
     </v-app-bar>
     <v-main class="bg-color">
-      <v-container class="h-100 pa-0">
-        <v-container class="my-4">
+      <v-container class="h-100 pa-0" fluid>
+        <v-container class="my-4" fluid>
           <v-row justify="center">
             <v-col cols="auto">
               <v-card elevation="0">
@@ -44,7 +47,7 @@ const dialog = ref(false)
 
         <v-divider :thickness="8"></v-divider>
 
-        <v-container>
+        <v-container fluid>
           <v-row>
             <v-col v-for="n in 10" :key="n" cols="12">
               <ItemTRA :id="n" @click="dialog = true" />
@@ -55,40 +58,9 @@ const dialog = ref(false)
     </v-main>
   </v-layout>
 
-  <v-dialog v-model="dialog" scrollable fullscreen persistent>
-    <v-container class="bottom-container pa-0">
-      <v-toolbar class="rounded-t-xl" color="white" title="ABC Series">
-        <v-spacer></v-spacer>
-        <v-btn icon @click="dialog = false">
-          <v-icon>mdi-close</v-icon>
-        </v-btn>
-      </v-toolbar>
-      <v-container class="bg-white">
-        <v-row justify="center">
-          <v-col cols="auto">
-            <v-card elevation="0">
-              <LazyImage
-                bg-color="bg-white"
-                src="https://picsum.photos/200"
-                width="218"
-                :aspect-ratio="1"
-                cover
-              />
-            </v-card>
-          </v-col>
-          <v-col cols="12">
-            <p class="text-caption font-weight-bold text-center">TRA-1</p>
-            <p class="text-caption text-description text-center">{{ $d(new Date(), 'long') }}</p>
-          </v-col>
-        </v-row>
-        <v-row justify="center">
-          <v-col cols="10">
-            <v-btn class="text-capitalize" elevation="0" color="primary" block rounded>Share</v-btn>
-          </v-col>
-        </v-row>
-      </v-container>
-    </v-container>
-  </v-dialog>
+  <DialogShareTRA :dialog="dialog" @on-close="dialog = false" />
+
+  <Loading :overlay="overlay" />
 </template>
 
 <style>
