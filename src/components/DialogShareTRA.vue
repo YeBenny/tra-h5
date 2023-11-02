@@ -8,6 +8,15 @@ const props = defineProps({
   dialog: {
     type: Boolean,
     required: true
+  },
+  series: {
+    type: Object
+  },
+  ownNumber: {
+    type: Number
+  },
+  traInfo: {
+    type: Object
   }
 })
 
@@ -32,8 +41,8 @@ const shareViaWebShare = async () => {
     let files = [new File([blob], `${Date.now()}.${type}`, { type: blob.type })]
     if (navigator.share) {
       navigator.share({
-        title: 'Share Title',
-        text: 'Share Text',
+        title: 'Share Your TRA',
+        text: 'Share ',
         files
       })
     }
@@ -44,7 +53,7 @@ const shareViaWebShare = async () => {
 <template>
   <v-dialog v-model="dialog" scrollable fullscreen persistent>
     <v-container class="bottom-container pa-0" fluid>
-      <v-toolbar class="rounded-t-xl" color="white" title="ABC Series" density="comfortable">
+      <v-toolbar class="rounded-t-xl" color="white" :title="series.title" density="comfortable">
         <v-spacer></v-spacer>
         <v-btn icon @click="onClose">
           <v-icon>mdi-close</v-icon>
@@ -56,15 +65,15 @@ const shareViaWebShare = async () => {
             <v-col cols="auto">
               <LazyImage
                 bg-color="bg-white"
-                src="https://picsum.photos/200"
+                :src="traInfo.image"
                 width="218"
                 :aspect-ratio="1"
-                cover
+                contain
               />
             </v-col>
             <v-col cols="12">
-              <p class="text-caption font-weight-bold text-center">TRA-1</p>
-              <p class="text-caption text-description text-center">{{ $d(new Date(), 'long') }}</p>
+              <p class="text-caption font-weight-bold text-center">{{ traInfo.title }}</p>
+              <p class="text-caption text-description text-center">{{ traInfo.description }}</p>
             </v-col>
           </v-card>
           <v-col cols="10">

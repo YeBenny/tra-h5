@@ -21,13 +21,7 @@ defineProps({
 </script>
 
 <template>
-  <v-img
-    :class="bgColor"
-    :src="src"
-    :lazy-src="src"
-    :max-height="maxHeight"
-    :aspect-ratio="aspectRatio"
-  >
+  <v-img :class="bgColor" :src="src" :max-height="maxHeight" :aspect-ratio="aspectRatio">
     <template v-slot:placeholder>
       <v-row class="fill-height ma-0" align-content="center" justify="center">
         <v-progress-circular

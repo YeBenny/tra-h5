@@ -1,5 +1,11 @@
 <script setup>
 import LazyImage from './LazyImage.vue'
+
+defineProps({
+  series: {
+    type: Object
+  }
+})
 </script>
 
 <!-- <template>
@@ -32,10 +38,10 @@ import LazyImage from './LazyImage.vue'
   </v-card>
 </template> -->
 <template>
-  <v-card class="mx-auto">
-    <LazyImage bg-color="bg-white" :src="`https://picsum.photos/200?random=${Date.now()}`" cover />
-    <v-card-title>ABC Series</v-card-title>
-    <v-card-text>4/8 Collections</v-card-text>
+  <v-card v-if="series" class="mx-auto">
+    <LazyImage bg-color="bg-white" :src="series.image" contain />
+    <v-card-title>{{ series.title }}</v-card-title>
+    <v-card-text>{{ series.description }}</v-card-text>
   </v-card>
 </template>
 
