@@ -41,8 +41,8 @@ const shareViaWebShare = async () => {
     let files = [new File([blob], `${Date.now()}.${type}`, { type: blob.type })]
     if (navigator.share) {
       navigator.share({
-        title: 'Share Your TRA',
-        text: 'Share ',
+        title: 'Share TRA',
+        text: 'Share TRA to your friends!',
         files
       })
     }
