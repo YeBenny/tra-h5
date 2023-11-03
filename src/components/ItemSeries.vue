@@ -39,7 +39,7 @@ defineProps({
 </template> -->
 <template>
   <v-card v-if="series" class="mx-auto">
-    <LazyImage bg-color="bg-white" :src="series.image" contain />
+    <LazyImage bg-color="bg-white" :src="series.image" :max-height="128" contain />
     <v-card-title>{{ series.title }}</v-card-title>
     <v-card-text>{{ series.description }}</v-card-text>
   </v-card>

@@ -1,6 +1,7 @@
 <script setup>
 import { onMounted, ref } from 'vue'
 import router from '@/router'
+import Loading from '../components/Loading.vue'
 import EmptySeries from '../components/EmptySeries.vue'
 import ItemSeries from '../components/ItemSeries.vue'
 import { useConfigStore } from '../stores/config'
@@ -133,6 +134,8 @@ onMounted(async () => {
       </v-container>
     </v-main>
   </v-layout>
+
+  <Loading :overlay="overlay" />
 </template>
 
 <style>
