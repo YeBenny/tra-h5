@@ -8,6 +8,9 @@ import { registerUpstreamUser, issueTra, getTokenContext } from '../axios'
 
 const title = ref('Home')
 const overlay = ref(false)
+const snackbar = ref(false)
+const color = ref()
+const msg = ref()
 const tab = ref(null)
 
 const appIdOperatorRef = ref('z3dmGarJ7KEI354VyctaqJf8NoOVQ0BHe1vkUxDXY')
@@ -32,10 +35,14 @@ const onClickRegister = async () => {
   let appSecret = appSecretOperatorRef.value
   try {
     overlay.value = true
-    let data = await registerUpstreamUser(upstreamUserId, appId, appSecret)
-    console.log(data)
+    await registerUpstreamUser(upstreamUserId, appId, appSecret)
+    snackbar.value = true
+    color.value = 'success'
+    msg.value = 'Register successfully'
   } catch (err) {
-    console.log(err)
+    snackbar.value = true
+    color.value = 'error'
+    msg.value = err
   } finally {
     overlay.value = false
   }
@@ -53,10 +60,14 @@ const onClickIssue = async () => {
   let appSecret = appSecretOperatorRef.value
   try {
     overlay.value = true
-    let data = await issueTra(upstreamUserId, traId, remark, appId, appSecret)
-    console.log(data)
+    await issueTra(upstreamUserId, traId, remark, appId, appSecret)
+    snackbar.value = true
+    color.value = 'success'
+    msg.value = 'Issue successfully'
   } catch (err) {
-    console.log(err)
+    snackbar.value = true
+    color.value = 'error'
+    msg.value = err
   } finally {
     overlay.value = false
   }
@@ -88,7 +99,9 @@ const onClickHome = async () => {
     }
     router.push({ name: 'my-series' })
   } catch (err) {
-    console.log(err)
+    snackbar.value = true
+    color.value = 'error'
+    msg.value = err
   } finally {
     overlay.value = false
   }
@@ -170,4 +183,8 @@ const onClickHome = async () => {
   </v-layout>
 
   <Loading :overlay="overlay" />
+
+  <v-snackbar v-model="snackbar" :color="color" timeout="3000">
+    {{ msg }}
+  </v-snackbar>
 </template>
