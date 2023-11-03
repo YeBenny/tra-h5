@@ -4,33 +4,76 @@ import router from '@/router'
 import Loading from '../components/Loading.vue'
 import { useConfigStore } from '../stores/config'
 import { storeToRefs } from 'pinia'
-import { getTokenContext } from '../axios'
+import { registerUpstreamUser, issueTra, getTokenContext } from '../axios'
 
 const title = ref('Home')
 const overlay = ref(false)
 const tab = ref(null)
 
-const appIdRegsiterRef = ref('10b4b0c4-7605-11ee-b5fb-018bb7f5a65d')
-const appSecretRegisterRef = ref('01fff3db0c0cd53ee09865236a50aaa982ddae01014e2c44795c99ea59cd7458')
+const appIdOperatorRef = ref('z3dmGarJ7KEI354VyctaqJf8NoOVQ0BHe1vkUxDXY')
+const appSecretOperatorRef = ref('Jtx0suVNtGCb3eF8feJrvYqB5QWXHomKIVlFrqSzw')
+
+const upstreamUserIdRegisterRef = ref('FL0000000001')
+const upstreamUserIdIssueRef = ref('FL0000000001')
+const traIdRef = ref('3fab6ee0-96a9-422c-ae56-a59c3bd1552f')
+const remarkRef = ref('remark')
 
 const upstreamUserIdRef = ref('FL0000000001')
-const appIdRef = ref('10b4b0c4-7605-11ee-b5fb-018bb7f5a65d')
-const appSecretRef = ref('01fff3db0c0cd53ee09865236a50aaa982ddae01014e2c44795c99ea59cd7458')
+const appIdRef = ref('z3dmGarJ7KEI354VyctaqJf8NoOVQ0BHe1vkUxDXY')
+const appSecretRef = ref('Jtx0suVNtGCb3eF8feJrvYqB5QWXHomKIVlFrqSzw')
 
-const onClickRegister = async () => {}
+const onClickRegister = async () => {
+  let store = useConfigStore()
+  let { config } = storeToRefs(store)
+  config.value.webTraBusinessBaseUrl = import.meta.env.VITE_BUSINESS_BASE_URL
+
+  let upstreamUserId = upstreamUserIdRegisterRef.value
+  let appId = appIdOperatorRef.value
+  let appSecret = appSecretOperatorRef.value
+  try {
+    overlay.value = true
+    let data = await registerUpstreamUser(upstreamUserId, appId, appSecret)
+    console.log(data)
+  } catch (err) {
+    console.log(err)
+  } finally {
+    overlay.value = false
+  }
+}
+
+const onClickIssue = async () => {
+  let store = useConfigStore()
+  let { config } = storeToRefs(store)
+  config.value.webTraBusinessBaseUrl = import.meta.env.VITE_BUSINESS_BASE_URL
+
+  let upstreamUserId = upstreamUserIdRegisterRef.value
+  let traId = traIdRef.value
+  let remark = remarkRef.value
+  let appId = appIdOperatorRef.value
+  let appSecret = appSecretOperatorRef.value
+  try {
+    overlay.value = true
+    let data = await issueTra(upstreamUserId, traId, remark, appId, appSecret)
+    console.log(data)
+  } catch (err) {
+    console.log(err)
+  } finally {
+    overlay.value = false
+  }
+}
 
 const onClickHome = async () => {
+  let store = useConfigStore()
+  let { config } = storeToRefs(store)
+  config.value.webTraBaseUrl = import.meta.env.VITE_END_USER_BASE_URL
+
   let upstreamUserId = upstreamUserIdRef.value
   let appId = appIdRef.value
   let appSecret = appSecretRef.value
   try {
     overlay.value = true
     let data = await getTokenContext(upstreamUserId, appId, appSecret)
-
-    let store = useConfigStore()
-    let { config } = storeToRefs(store)
     let { timestamp, signature } = data
-    config.value.webTraBaseUrl = import.meta.env.VITE_BASE_URL
     if (upstreamUserId) {
       config.value.upstreamUserId = upstreamUserId
     }
@@ -73,15 +116,33 @@ const onClickHome = async () => {
           <v-container fluid>
             <v-row justify="center">
               <v-col cols="12">
-                <v-text-field v-model="appIdRegsiterRef" label="App ID" required></v-text-field>
+                <v-col><p class="text-h6">Input your App ID and App Secret</p></v-col>
+                <v-text-field v-model="appIdOperatorRef" label="App ID" required></v-text-field>
                 <v-text-field
-                  v-model="appSecretRegisterRef"
+                  v-model="appSecretOperatorRef"
                   label="App Secret"
                   required
                 ></v-text-field>
               </v-col>
-              <v-col cols="auto">
+              <v-col cols="12">
+                <v-col><p class="text-h6">Register TRA User</p></v-col>
+                <v-text-field
+                  v-model="upstreamUserIdRegisterRef"
+                  label="Upstream User ID"
+                  required
+                ></v-text-field>
                 <v-btn color="primary" @click="onClickRegister">Register</v-btn>
+              </v-col>
+              <v-col cols="12">
+                <v-col><p class="text-h6">Issue TRA</p></v-col>
+                <v-text-field
+                  v-model="upstreamUserIdIssueRef"
+                  label="Upstream User ID"
+                  required
+                ></v-text-field>
+                <v-text-field v-model="traIdRef" label="TRA ID" required></v-text-field>
+                <v-text-field v-model="remarkRef" label="Remark" required></v-text-field>
+                <v-btn color="primary" @click="onClickIssue">Issue</v-btn>
               </v-col>
             </v-row>
           </v-container>
