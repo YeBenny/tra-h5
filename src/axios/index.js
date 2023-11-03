@@ -5,11 +5,10 @@ import CryptoJS from 'crypto-js/crypto-js'
 
 axios.defaults.withCredentials = true
 
-axios.defaults.baseURL = import.meta.env.VITE_BASE_URL
-
 axios.interceptors.request.use(
   (config) => {
     config.headers['X-Wegalaxy-Request-Id'] = uuidv4()
+    config.headers['X-Tra-Transaction-Id'] = uuidv4()
     return config
   },
   (error) => {
@@ -55,10 +54,47 @@ const getHeaders = (appId, signature, timestamp) => {
   return headers
 }
 
-function regsiterUser(upstreamUserId) {
-  return axios.post(`/users/register`, {
-    upstreamUserId: upstreamUserId
-  })
+function registerUpstreamUser(upstreamUserId, appId, appSecret) {
+  const httpMethod = 'POST'
+  const httpPath = '/v1/tra/users/register'
+  const requestBody = { upstreamUserId: upstreamUserId }
+  const timestamp = Math.floor(Date.now() / 1000)
+  const source = httpMethod + httpPath + JSON.stringify(requestBody) + timestamp
+  let hashHmacSHA256 = CryptoJS.HmacSHA256(source, appSecret)
+  let signature = CryptoJS.enc.Base64.stringify(hashHmacSHA256)
+
+  let { config } = useConfigStore()
+  return axios.post(
+    `${config.webTraBusinessBaseUrl}/users/register`,
+    { ...requestBody },
+    {
+      headers: getHeaders(appId, signature, timestamp)
+    }
+  )
+}
+
+function issueTra(upstreamUserId, traId, remark, appId, appSecret) {
+  const httpMethod = 'POST'
+  const httpPath = '/v1/tra/tras/issue'
+  const requestBody = {
+    upstreamUserId: upstreamUserId,
+    traId: traId,
+    remark: remark
+  }
+  console.log(JSON.stringify(requestBody))
+  const timestamp = Math.floor(Date.now() / 1000)
+  const source = httpMethod + httpPath + JSON.stringify(requestBody) + timestamp
+  let hashHmacSHA256 = CryptoJS.HmacSHA256(source, appSecret)
+  let signature = CryptoJS.enc.Base64.stringify(hashHmacSHA256)
+
+  let { config } = useConfigStore()
+  return axios.post(
+    `${config.webTraBusinessBaseUrl}/tras/issue`,
+    { ...requestBody },
+    {
+      headers: getHeaders(appId, signature, timestamp)
+    }
+  )
 }
 
 function getTokenContext(upstreamUserId, appId, appSecret) {
@@ -80,8 +116,9 @@ function getTokenContext(upstreamUserId, appId, appSecret) {
 }
 
 function getToken(upstreamUserId, appId, signature, timestamp) {
+  let { config } = useConfigStore()
   return axios.post(
-    `/users/get-token`,
+    `${config.webTraBaseUrl}/users/get-token`,
     {
       upstreamUserId: upstreamUserId
     },
@@ -160,7 +197,8 @@ function getRedemptionList(seriesId) {
 }
 
 export {
-  regsiterUser,
+  registerUpstreamUser,
+  issueTra,
   getTokenContext,
   getToken,
   getSeriesList,
