@@ -53,7 +53,7 @@ const onClickIssue = async () => {
   let { config } = storeToRefs(store)
   config.value.webTraBusinessBaseUrl = import.meta.env.VITE_BUSINESS_BASE_URL
 
-  let upstreamUserId = upstreamUserIdRegisterRef.value
+  let upstreamUserId = upstreamUserIdIssueRef.value
   let traId = traIdRef.value
   let remark = remarkRef.value
   let appId = appIdOperatorRef.value
