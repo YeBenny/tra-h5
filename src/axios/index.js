@@ -196,6 +196,20 @@ function getRedemptionList(seriesId) {
   )
 }
 
+function redeemTRA(redemptionRuleId, redeemItems) {
+  let { config } = useConfigStore()
+  return axios.post(
+    `${config.webTraBaseUrl}/apps/series/redemptions/do`,
+    {
+      redemptionRuleId: redemptionRuleId,
+      redeemItems: redeemItems
+    },
+    {
+      headers: getHeaders()
+    }
+  )
+}
+
 export {
   registerUpstreamUser,
   issueTra,
@@ -205,5 +219,6 @@ export {
   getSeriesDetail,
   getTraList,
   getTraDetail,
-  getRedemptionList
+  getRedemptionList,
+  redeemTRA
 }
