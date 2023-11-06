@@ -6,7 +6,7 @@ import { useConfigStore } from '../stores/config'
 import { storeToRefs } from 'pinia'
 import { registerUpstreamUser, issueTra, getTokenContext } from '../axios'
 
-const title = ref('Home')
+const title = ref('Demo')
 const overlay = ref(false)
 const snackbar = ref(false)
 const color = ref()
@@ -136,6 +136,11 @@ const onClickHome = async () => {
                   label="App Secret"
                   required
                 ></v-text-field>
+                <p class="text-caption text-error">
+                  App ID and App Secret MUST be kept safely and are used to calculate signature
+                  being verified by TRA.<br />For Demo purpose, we calculate signature in frontend
+                  just for simplicity and intuition
+                </p>
               </v-col>
               <v-col cols="12">
                 <v-col><p class="text-h6">Register TRA User</p></v-col>
