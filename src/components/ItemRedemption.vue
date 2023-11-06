@@ -4,22 +4,24 @@ import LazyImage from './LazyImage.vue'
 import { getTraDetail } from '../axios'
 
 const props = defineProps({
-  redemptionRule: {
+  redemption: {
     type: Object
-  },
-  redemptionTraInfos: {
-    type: [Object]
   }
 })
 
-const { redemptionTraInfos } = toRefs(props)
+const { redemption } = toRefs(props)
 const traInfos = ref([])
+
+const emits = defineEmits(['onClickRedeem'])
+function onClickRedeem(redemption) {
+  emits('onClickRedeem', redemption)
+}
 
 const show = ref(false)
 
 onMounted(async () => {
   const getData = async () => {
-    for (let redemptionTraInfo of redemptionTraInfos.value) {
+    for (let redemptionTraInfo of redemption.value.redemptionTraInfos) {
       try {
         let result = await getTraDetail(redemptionTraInfo.traId)
         traInfos.value.push({ ...redemptionTraInfo, ...result })
@@ -35,12 +37,19 @@ onMounted(async () => {
 
 <template>
   <v-card>
-    <LazyImage bg-color="bg-white" :src="redemptionRule.image" :max-height="120" contain />
-    <v-card-title>{{ redemptionRule.title }}</v-card-title>
-    <v-card-subtitle>{{ redemptionRule.description }}</v-card-subtitle>
+    <LazyImage
+      bg-color="bg-white"
+      :src="redemption.redemptionRule.image"
+      :max-height="120"
+      contain
+    />
+    <v-card-title>{{ redemption.redemptionRule.title }}</v-card-title>
+    <v-card-subtitle>{{ redemption.redemptionRule.description }}</v-card-subtitle>
 
     <v-card-actions>
-      <v-btn color="orange-lighten-2" variant="text">Redeem</v-btn>
+      <v-btn color="orange-lighten-2" variant="text" @click="onClickRedeem(redemption)"
+        >Redeem</v-btn
+      >
       <v-spacer></v-spacer>
       <v-btn :icon="show ? 'mdi-chevron-up' : 'mdi-chevron-down'" @click="show = !show"></v-btn>
     </v-card-actions>

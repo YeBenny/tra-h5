@@ -7,7 +7,8 @@ import LazyImage from '../components/LazyImage.vue'
 import ItemTRA from '../components/ItemTRA.vue'
 import ItemRedemption from '../components/ItemRedemption.vue'
 import DialogShareTRA from '../components/DialogShareTRA.vue'
-import { getSeriesDetail, getTraList, getRedemptionList } from '../axios'
+import DialogRedeemTRA from '../components/DialogRedeemTRA.vue'
+import { getSeriesDetail, getTraList, getRedemptionList, redeemTRA } from '../axios'
 
 const { id } = useRoute().params
 
@@ -15,9 +16,14 @@ const series = ref()
 const tab = ref()
 const traList = ref([])
 const redemptionList = ref([])
+const dialogShare = ref(false)
 const selectedTra = ref()
-const dialog = ref(false)
+const dialogRedeem = ref(false)
+const selectedRedemption = ref()
 const overlay = ref(false)
+const snackbar = ref(false)
+const color = ref()
+const msg = ref()
 
 const getData = async () => {
   try {
@@ -39,8 +45,51 @@ onMounted(() => {
   getData()
 })
 
+const redeemTra = (redemption) => {
+  const redemptionTraInfos = redemption.redemptionTraInfos
+  let canRedeem = true
+  redemptionTraInfos.forEach((redemptionTraInfo) => {
+    let tra = traList.value.find((tra) => tra.traInfo.id === redemptionTraInfo.traId)
+    if (tra) {
+      canRedeem =
+        tra.assetList.filter((asset) => asset.value > 0).length >= redemptionTraInfo.quantity
+    }
+    if (!canRedeem) {
+      return
+    }
+  })
+  if (canRedeem) {
+    dialogRedeem.value = true
+    selectedRedemption.value = redemption
+  } else {
+    snackbar.value = true
+    color.value = 'error'
+    msg.value = 'Not Enough TRA'
+  }
+}
+
+const redeem = async (redemption, redeemItems) => {
+  const redemptionRule = redemption.redemptionRule
+  try {
+    overlay.value = true
+    let result = await redeemTRA(redemptionRule.id, redeemItems)
+    console.log(result)
+    snackbar.value = true
+    color.value = 'success'
+    msg.value = 'Redeem Successfully'
+  } catch (err) {
+    console.log(err)
+    snackbar.value = true
+    color.value = 'error'
+    msg.value = err
+  } finally {
+    overlay.value = false
+    dialogRedeem.value = false
+  }
+}
+
 const shareTra = (tra) => {
-  dialog.value = true
+  dialogShare.value = true
   selectedTra.value = tra
 }
 </script>
@@ -102,10 +151,7 @@ const shareTra = (tra) => {
             <v-container fluid>
               <v-row justify="center">
                 <v-col v-for="(redemption, index) in redemptionList" :key="index" cols="12">
-                  <ItemRedemption
-                    :redemption-rule="redemption.redemptionRule"
-                    :redemption-tra-infos="redemption.redemptionTraInfos"
-                  />
+                  <ItemRedemption :redemption="redemption" @on-click-redeem="redeemTra" />
                 </v-col>
               </v-row>
             </v-container>
@@ -118,11 +164,24 @@ const shareTra = (tra) => {
   <DialogShareTRA
     v-if="series && selectedTra"
     :series="series"
-    :dialog="dialog"
+    :dialog="dialogShare"
     :own-number="selectedTra.ownNumber"
     :tra-info="selectedTra.traInfo"
-    @on-close="dialog = false"
+    @on-close="dialogShare = false"
   />
+
+  <DialogRedeemTRA
+    v-if="traList && selectedRedemption"
+    :tra-list="traList"
+    :redemption="selectedRedemption"
+    :dialog="dialogRedeem"
+    @on-close="dialogRedeem = false"
+    @on-click-redeem="redeem"
+  />
+
+  <v-snackbar v-model="snackbar" :color="color" timeout="3000">
+    {{ msg }}
+  </v-snackbar>
 
   <Loading :overlay="overlay" />
 </template>
