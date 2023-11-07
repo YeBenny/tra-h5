@@ -12,10 +12,7 @@ const props = defineProps({
   series: {
     type: Object
   },
-  ownNumber: {
-    type: Number
-  },
-  traInfo: {
+  tra: {
     type: Object
   }
 })
@@ -61,21 +58,39 @@ const shareViaWebShare = async () => {
       </v-toolbar>
       <v-container class="bg-white" fluid>
         <v-row justify="center">
-          <v-card id="share-content">
-            <v-col cols="auto">
-              <LazyImage
-                bg-color="bg-white"
-                :src="traInfo.image"
-                width="218"
-                :aspect-ratio="1"
-                contain
-              />
-            </v-col>
-            <v-col cols="12">
-              <p class="text-caption font-weight-bold text-center">{{ traInfo.title }}</p>
-              <p class="text-caption text-description text-center">{{ traInfo.description }}</p>
-            </v-col>
-          </v-card>
+          <v-col cols="12">
+            <v-carousel
+              :height="448"
+              :continuous="false"
+              :show-arrows="false"
+              hide-delimiter-background
+            >
+              <div id="share-content">
+                <v-carousel-item v-for="(asset, index) in tra.assetList" :key="index">
+                  <v-card class="ma-3">
+                    <v-row justify="center">
+                      <v-col cols="auto">
+                        <LazyImage
+                          bg-color="bg-white"
+                          :src="tra.traInfo.image"
+                          width="218"
+                          :aspect-ratio="1"
+                          contain
+                        />
+                      </v-col>
+                      <v-col cols="12">
+                        <v-card-text>#{{ asset.id }}</v-card-text>
+                        <v-card-item>
+                          <v-card-title>{{ tra.traInfo.title }}</v-card-title>
+                          <v-card-subtitle>{{ tra.traInfo.description }}</v-card-subtitle>
+                        </v-card-item>
+                      </v-col>
+                    </v-row>
+                  </v-card>
+                </v-carousel-item>
+              </div>
+            </v-carousel>
+          </v-col>
           <v-col cols="10">
             <v-btn
               class="text-capitalize"
