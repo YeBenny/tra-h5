@@ -72,11 +72,11 @@ const onClickHome = async () => {
     overlay.value = true
     let data = await getTokenContext(upstreamUserId, appId, appSecret)
     let { timestamp, signature } = data
-    window.location.href = `${endUserDomain}/#/?webTraBaseUrl=${encodeURI(
+    window.location.href = `${endUserDomain}/#/?webTraBaseUrl=${encodeURIComponent(
       webTraBaseUrl
-    )}&upstreamUserId=${encodeURI(upstreamUserId)}&appId=${encodeURI(appId)}&timestamp=${encodeURI(
-      timestamp
-    )}&signature=${encodeURI(signature)}`
+    )}&upstreamUserId=${encodeURIComponent(upstreamUserId)}&appId=${encodeURIComponent(
+      appId
+    )}&timestamp=${encodeURIComponent(timestamp)}&signature=${encodeURIComponent(signature)}`
   } catch (err) {
     snackbar.value = true
     color.value = 'error'
