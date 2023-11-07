@@ -1,9 +1,6 @@
 <script setup>
 import { ref } from 'vue'
-import router from '@/router'
 import Loading from '../components/Loading.vue'
-import { useConfigStore } from '../stores/config'
-import { storeToRefs } from 'pinia'
 import { registerUpstreamUser, issueTra, getTokenContext } from '../axios'
 
 const title = ref('Demo')
@@ -26,10 +23,6 @@ const appIdRef = ref('z3dmGarJ7KEI354VyctaqJf8NoOVQ0BHe1vkUxDXY')
 const appSecretRef = ref('Jtx0suVNtGCb3eF8feJrvYqB5QWXHomKIVlFrqSzw')
 
 const onClickRegister = async () => {
-  let store = useConfigStore()
-  let { config } = storeToRefs(store)
-  config.value.webTraBusinessBaseUrl = import.meta.env.VITE_BUSINESS_BASE_URL
-
   let upstreamUserId = upstreamUserIdRegisterRef.value
   let appId = appIdOperatorRef.value
   let appSecret = appSecretOperatorRef.value
@@ -49,10 +42,6 @@ const onClickRegister = async () => {
 }
 
 const onClickIssue = async () => {
-  let store = useConfigStore()
-  let { config } = storeToRefs(store)
-  config.value.webTraBusinessBaseUrl = import.meta.env.VITE_BUSINESS_BASE_URL
-
   let upstreamUserId = upstreamUserIdIssueRef.value
   let traId = traIdRef.value
   let remark = remarkRef.value
@@ -74,10 +63,8 @@ const onClickIssue = async () => {
 }
 
 const onClickHome = async () => {
-  let store = useConfigStore()
-  let { config } = storeToRefs(store)
-  config.value.webTraBaseUrl = import.meta.env.VITE_END_USER_BASE_URL
-
+  let endUserDomain = import.meta.env.VITE_END_USER_DOMAIN
+  let webTraBaseUrl = import.meta.env.VITE_END_USER_BASE_URL
   let upstreamUserId = upstreamUserIdRef.value
   let appId = appIdRef.value
   let appSecret = appSecretRef.value
@@ -85,19 +72,11 @@ const onClickHome = async () => {
     overlay.value = true
     let data = await getTokenContext(upstreamUserId, appId, appSecret)
     let { timestamp, signature } = data
-    if (upstreamUserId) {
-      config.value.upstreamUserId = upstreamUserId
-    }
-    if (appId) {
-      config.value.appId = appId
-    }
-    if (timestamp) {
-      config.value.timestamp = timestamp
-    }
-    if (signature) {
-      config.value.signature = signature
-    }
-    router.push({ name: 'my-series' })
+    window.location.href = `${endUserDomain}?webTraBaseUrl=${encodeURI(
+      webTraBaseUrl
+    )}&upstreamUserId=${encodeURI(upstreamUserId)}&appId=${encodeURI(appId)}&timestamp=${encodeURI(
+      timestamp
+    )}&signature=${encodeURI(signature)}`
   } catch (err) {
     snackbar.value = true
     color.value = 'error'

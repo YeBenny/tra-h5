@@ -1,7 +1,5 @@
 import { createRouter, createWebHashHistory } from 'vue-router'
 import HomeView from '../views/HomeView.vue'
-import MySeriesView from '../views/MySeriesView.vue'
-import MySeriesDetailView from '../views/MySeriesDetailView.vue'
 
 const router = createRouter({
   history: createWebHashHistory(),
@@ -10,16 +8,6 @@ const router = createRouter({
       path: '/',
       name: 'home',
       component: HomeView
-    },
-    {
-      path: '/my-series',
-      name: 'my-series',
-      component: MySeriesView
-    },
-    {
-      path: '/my-series/:id',
-      name: 'my-series-detail',
-      component: MySeriesDetailView
     }
   ]
 })

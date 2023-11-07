@@ -1,9 +1,9 @@
 import axios from 'axios'
 import { v4 as uuidv4 } from 'uuid'
-import { useConfigStore } from '../stores/config'
 import CryptoJS from 'crypto-js/crypto-js'
 
 axios.defaults.withCredentials = true
+axios.defaults.baseURL = import.meta.env.VITE_BUSINESS_BASE_URL
 
 axios.interceptors.request.use(
   (config) => {
@@ -37,11 +37,6 @@ axios.interceptors.response.use(
 
 const getHeaders = (appId, signature, timestamp) => {
   let headers = {}
-  let { config } = useConfigStore()
-  let token = config.webTraAccessToken
-  if (token) {
-    headers['Authorization'] = `Bearer ${token}`
-  }
   if (appId) {
     headers['appId'] = appId
   }
@@ -63,9 +58,8 @@ function registerUpstreamUser(upstreamUserId, appId, appSecret) {
   let hashHmacSHA256 = CryptoJS.HmacSHA256(source, appSecret)
   let signature = CryptoJS.enc.Base64.stringify(hashHmacSHA256)
 
-  let { config } = useConfigStore()
   return axios.post(
-    `${config.webTraBusinessBaseUrl}/users/register`,
+    '/users/register',
     { ...requestBody },
     {
       headers: getHeaders(appId, signature, timestamp)
@@ -87,9 +81,8 @@ function issueTra(upstreamUserId, traId, remark, appId, appSecret) {
   let hashHmacSHA256 = CryptoJS.HmacSHA256(source, appSecret)
   let signature = CryptoJS.enc.Base64.stringify(hashHmacSHA256)
 
-  let { config } = useConfigStore()
   return axios.post(
-    `${config.webTraBusinessBaseUrl}/tras/issue`,
+    '/tras/issue',
     { ...requestBody },
     {
       headers: getHeaders(appId, signature, timestamp)
@@ -115,110 +108,4 @@ function getTokenContext(upstreamUserId, appId, appSecret) {
   }
 }
 
-function getToken(upstreamUserId, appId, signature, timestamp) {
-  let { config } = useConfigStore()
-  return axios.post(
-    `${config.webTraBaseUrl}/users/get-token`,
-    {
-      upstreamUserId: upstreamUserId
-    },
-    {
-      headers: getHeaders(appId, signature, timestamp)
-    }
-  )
-}
-
-function getSeriesList(startIndex, pageSize) {
-  let { config } = useConfigStore()
-  return axios.post(
-    `${config.webTraBaseUrl}/apps/series/list`,
-    {
-      pageInfo: {
-        startIndex: startIndex,
-        pageSize: pageSize
-      }
-    },
-    {
-      headers: getHeaders()
-    }
-  )
-}
-
-function getSeriesDetail(id) {
-  let { config } = useConfigStore()
-  return axios.post(
-    `${config.webTraBaseUrl}/apps/series/get`,
-    {
-      id: id
-    },
-    {
-      headers: getHeaders()
-    }
-  )
-}
-
-function getTraList(seriesId) {
-  let { config } = useConfigStore()
-  return axios.post(
-    `${config.webTraBaseUrl}/apps/series/tras/list`,
-    {
-      seriesId: seriesId
-    },
-    {
-      headers: getHeaders()
-    }
-  )
-}
-
-function getTraDetail(id) {
-  let { config } = useConfigStore()
-  return axios.post(
-    `${config.webTraBaseUrl}/apps/series/tras/get`,
-    {
-      id: id
-    },
-    {
-      headers: getHeaders()
-    }
-  )
-}
-
-function getRedemptionList(seriesId) {
-  let { config } = useConfigStore()
-  return axios.post(
-    `${config.webTraBaseUrl}/apps/series/redemptions/list`,
-    {
-      seriesId: seriesId
-    },
-    {
-      headers: getHeaders()
-    }
-  )
-}
-
-function redeemTRA(redemptionRuleId, redeemItems) {
-  let { config } = useConfigStore()
-  return axios.post(
-    `${config.webTraBaseUrl}/apps/series/redemptions/do`,
-    {
-      redemptionRuleId: redemptionRuleId,
-      redeemItems: redeemItems
-    },
-    {
-      headers: getHeaders()
-    }
-  )
-}
-
-export {
-  registerUpstreamUser,
-  issueTra,
-  getTokenContext,
-  getToken,
-  getSeriesList,
-  getSeriesDetail,
-  getTraList,
-  getTraDetail,
-  getRedemptionList,
-  redeemTRA
-}
+export { registerUpstreamUser, issueTra, getTokenContext }
