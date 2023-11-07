@@ -49,10 +49,12 @@ const redeemTra = (redemption) => {
   const redemptionTraInfos = redemption.redemptionTraInfos
   let canRedeem = true
   redemptionTraInfos.forEach((redemptionTraInfo) => {
+    canRedeem = false
     let tra = traList.value.find((tra) => tra.traInfo.id === redemptionTraInfo.traId)
-    if (tra) {
+    if (tra && tra.assetList) {
       canRedeem =
-        tra.assetList.filter((asset) => asset.value > 0).length >= redemptionTraInfo.quantity
+        tra.assetList.filter((asset) => asset.value === 1 && asset.writeOff === false).length >=
+        redemptionTraInfo.quantity
     }
     if (!canRedeem) {
       return
@@ -165,8 +167,7 @@ const shareTra = (tra) => {
     v-if="series && selectedTra"
     :series="series"
     :dialog="dialogShare"
-    :own-number="selectedTra.ownNumber"
-    :tra-info="selectedTra.traInfo"
+    :tra="selectedTra"
     @on-close="dialogShare = false"
   />
 

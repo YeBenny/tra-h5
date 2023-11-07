@@ -1,5 +1,5 @@
 <script setup>
-import { onMounted, ref, toRefs } from 'vue'
+import { computed, onMounted, ref, toRefs } from 'vue'
 import LazyImage from './LazyImage.vue'
 import Loading from './Loading.vue'
 
@@ -23,34 +23,45 @@ function onClose() {
 }
 function onClickRedeem(redemption) {
   const redeemItems = []
-  selects.forEach((select) => {
-    for (let i = 0; i < select.value.length; i++) {
-      let item = select.value[i]
-      let traInfo = traList.value[i].traInfo
+  for (let i = 0; i < selects.value.length; i++) {
+    let traInfo = traList.value[i].traInfo
+    let select = selects.value[i]
+    select.value.forEach((item) => {
       let redeemItem = {
         traId: traInfo.id,
         contractAddress: traInfo.contractAddress,
         assetIds: item.value.replace(/\s/g, '').split(',')
       }
       redeemItems.push(redeemItem)
-    }
-  })
+    })
+  }
   emits('onClickRedeem', redemption, redeemItems)
 }
 
 const overlay = ref(false)
-const selects = []
+const canRedeems = ref([])
+const selects = ref([])
+
+const canRedeem = computed(() => {
+  return canRedeems.value.length > 0 && canRedeems.value.filter((item) => !item).length === 0
+})
 
 onMounted(() => {
   for (let i = 0; i < traList.value.length; i++) {
-    selects.push(ref())
+    canRedeems.value[i] = false
+    selects.value[i] = ref()
   }
 })
 </script>
 <template>
   <v-dialog v-model="dialog" scrollable fullscreen persistent>
     <v-container class="bottom-container pa-0" fluid>
-      <v-toolbar class="rounded-t-xl" :title="redemption.redemptionRule.title" color="white" density="comfortable">
+      <v-toolbar
+        class="rounded-t-xl"
+        :title="redemption.redemptionRule.title"
+        color="white"
+        density="comfortable"
+      >
         <v-spacer></v-spacer>
         <v-btn icon @click="onClose">
           <v-icon>mdi-close</v-icon>
@@ -62,16 +73,35 @@ onMounted(() => {
             <v-select
               :ref="selects[index]"
               :items="tra.assetList"
+              :label="tra.traInfo.title"
+              :rules="[
+                (e) => {
+                  let quantity =
+                    redemption.redemptionTraInfos.find(
+                      (redemptionTraInfo) => redemptionTraInfo.traId === tra.traInfo.id
+                    )?.quantity || 0
+                  let canRedeem = e && e.length === quantity
+                  canRedeems[index] = canRedeem
+                  return canRedeem || `You must choose ${quantity} asset(s).`
+                }
+              ]"
+              :menu-props="{
+                closeOnContentClick: true
+              }"
               item-title="id"
               item-value="id"
+              color="primary"
               multiple
+              hide-selected
               chips
+              closable-chips
             >
               <template v-slot:item="{ props, item }">
                 <v-list-item
                   v-bind="props"
                   :title="`${tra.traInfo.title} #${item.raw.id}`"
                   :subtitle="tra.traInfo.description"
+                  :disabled="item.raw.value === 0 || item.raw.writeOff === true"
                 >
                   <template v-slot:prepend>
                     <v-avatar color="grey-lighten-1" size="x-large">
@@ -89,6 +119,7 @@ onMounted(() => {
               color="primary"
               block
               rounded
+              :disabled="!canRedeem"
               @click="onClickRedeem(redemption)"
             >
               Redeem
