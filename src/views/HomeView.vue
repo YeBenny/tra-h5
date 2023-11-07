@@ -72,7 +72,7 @@ const onClickHome = async () => {
     overlay.value = true
     let data = await getTokenContext(upstreamUserId, appId, appSecret)
     let { timestamp, signature } = data
-    window.location.href = `${endUserDomain}?webTraBaseUrl=${encodeURI(
+    window.location.href = `${endUserDomain}/#/?webTraBaseUrl=${encodeURI(
       webTraBaseUrl
     )}&upstreamUserId=${encodeURI(upstreamUserId)}&appId=${encodeURI(appId)}&timestamp=${encodeURI(
       timestamp
