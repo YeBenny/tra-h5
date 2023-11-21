@@ -35,7 +35,7 @@ axios.interceptors.response.use(
   }
 )
 
-const getHeaders = (appId, signature, timestamp) => {
+const getHeaders = (appId, signature, timestamp, functionName) => {
   let headers = {}
   if (appId) {
     headers['appId'] = appId
@@ -46,15 +46,18 @@ const getHeaders = (appId, signature, timestamp) => {
   if (timestamp) {
     headers['timestamp'] = timestamp
   }
+  if (functionName) {
+    headers['functionName'] = functionName
+  }
   return headers
 }
 
 function registerUpstreamUser(upstreamUserId, appId, appSecret) {
   const httpMethod = 'POST'
-  const httpPath = '/v1/tra/users/register'
+  const functionName = 'registerEndUser'
   const requestBody = { upstreamUserId: upstreamUserId }
   const timestamp = Math.floor(Date.now() / 1000)
-  const source = httpMethod + httpPath + JSON.stringify(requestBody) + timestamp
+  const source = httpMethod + functionName + JSON.stringify(requestBody) + timestamp
   let hashHmacSHA256 = CryptoJS.HmacSHA256(source, appSecret)
   let signature = CryptoJS.enc.Base64.stringify(hashHmacSHA256)
 
@@ -62,22 +65,21 @@ function registerUpstreamUser(upstreamUserId, appId, appSecret) {
     '/users/register',
     { ...requestBody },
     {
-      headers: getHeaders(appId, signature, timestamp)
+      headers: getHeaders(appId, signature, timestamp, functionName)
     }
   )
 }
 
 function issueTra(upstreamUserId, traId, remark, appId, appSecret) {
   const httpMethod = 'POST'
-  const httpPath = '/v1/tra/tras/issue'
+  const functionName = 'issueTraToUser'
   const requestBody = {
     upstreamUserId: upstreamUserId,
     traId: traId,
     remark: remark
   }
-  console.log(JSON.stringify(requestBody))
   const timestamp = Math.floor(Date.now() / 1000)
-  const source = httpMethod + httpPath + JSON.stringify(requestBody) + timestamp
+  const source = httpMethod + functionName + JSON.stringify(requestBody) + timestamp
   let hashHmacSHA256 = CryptoJS.HmacSHA256(source, appSecret)
   let signature = CryptoJS.enc.Base64.stringify(hashHmacSHA256)
 
@@ -85,17 +87,17 @@ function issueTra(upstreamUserId, traId, remark, appId, appSecret) {
     '/tras/issue',
     { ...requestBody },
     {
-      headers: getHeaders(appId, signature, timestamp)
+      headers: getHeaders(appId, signature, timestamp, functionName)
     }
   )
 }
 
 function getTokenContext(upstreamUserId, appId, appSecret) {
   const httpMethod = 'POST'
-  const httpPath = '/v1/tra/users/get-token'
+  const functionName = 'getToken'
   const requestBody = { upstreamUserId: upstreamUserId }
   const timestamp = Math.floor(Date.now() / 1000)
-  const source = httpMethod + httpPath + JSON.stringify(requestBody) + timestamp
+  const source = httpMethod + functionName + JSON.stringify(requestBody) + timestamp
   let hashHmacSHA256 = CryptoJS.HmacSHA256(source, appSecret)
   let signature = CryptoJS.enc.Base64.stringify(hashHmacSHA256)
 
