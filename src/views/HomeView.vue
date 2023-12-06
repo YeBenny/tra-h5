@@ -10,17 +10,17 @@ const color = ref()
 const msg = ref()
 const tab = ref(null)
 
-const appIdOperatorRef = ref('z3dmGarJ7KEI354VyctaqJf8NoOVQ0BHe1vkUxDXY')
-const appSecretOperatorRef = ref('Jtx0suVNtGCb3eF8feJrvYqB5QWXHomKIVlFrqSzw')
+const appIdOperatorRef = ref('Jw3bzwipoywMSKykNilAHlmquWz6oMU7X46pFW8')
+const appSecretOperatorRef = ref('niZcSMrShWvvIchL3xzWOQ2DRJKsj2ii4RMFmmOs')
 
 const upstreamUserIdRegisterRef = ref('FL0000000001')
 const upstreamUserIdIssueRef = ref('FL0000000001')
-const traIdRef = ref('3fab6ee0-96a9-422c-ae56-a59c3bd1552f')
+const traIdRef = ref('4bd7fe2d-4182-4749-8fbc-b3df76f50c0c')
 const remarkRef = ref('remark')
 
 const upstreamUserIdRef = ref('FL0000000001')
-const appIdRef = ref('z3dmGarJ7KEI354VyctaqJf8NoOVQ0BHe1vkUxDXY')
-const appSecretRef = ref('Jtx0suVNtGCb3eF8feJrvYqB5QWXHomKIVlFrqSzw')
+const appIdRef = ref('Jw3bzwipoywMSKykNilAHlmquWz6oMU7X46pFW8')
+const appSecretRef = ref('niZcSMrShWvvIchL3xzWOQ2DRJKsj2ii4RMFmmOs')
 
 const onClickRegister = async () => {
   let upstreamUserId = upstreamUserIdRegisterRef.value
